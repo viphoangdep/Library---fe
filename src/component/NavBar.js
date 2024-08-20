@@ -43,8 +43,8 @@ function Navbar() {
                 </a>
                 <ul className="dropdown-menu" aria-labelledby="employeeDropdown">
                  
-                  <li><Link className="dropdown-item" to="/admin/employee/Add_librarian">Add Employee</Link></li>
-                  <li><Link className="dropdown-item" to="/admin/employee/manage_librarian">Manage Employees</Link></li>
+                  <li><Link className="dropdown-item" to="/employee/Add_librarian">Add Employee</Link></li>
+                  <li><Link className="dropdown-item" to="/employee/manage_librarian">Manage Employees</Link></li>
                 </ul>
               </li>
             )}

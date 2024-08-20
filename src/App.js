@@ -33,8 +33,8 @@ function App() {
         <Route path="/librarian/add_book" element={<Add_book />} />
         <Route path="/librarian/edit_book" element={<Edit_book />} />
         <Route path="/about-us" element={<AboutUs />} />
-        <Route path="/admin/employee/Add_librarian" element={<AddLibrarian />} />
-        <Route path="/admin/employee/manage_librarian" element={<ManageLibrarian />} />
+        <Route path="/employee/Add_librarian" element={<AddLibrarian />} />
+        <Route path="/employee/manage_librarian" element={<ManageLibrarian />} />
       </Routes>
       <Footer style='bottom: 0'></Footer>
     </div>

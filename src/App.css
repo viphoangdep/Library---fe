@@ -100,3 +100,32 @@ body{
     width: 220px;
     cursor: pointer;
 }
+.position-relative {
+  position: relative;
+  cursor: pointer; /* Đổi con trỏ khi di chuột qua ảnh */
+}
+
+.overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5); /* Màu nền đen với độ mờ 50% */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  opacity: 0; /* Bắt đầu với độ mờ hoàn toàn trong suốt */
+  transition: opacity 0.3s ease; /* Thêm hiệu ứng chuyển tiếp */
+  pointer-events: none; /* Ngăn chặn việc overlay chặn các sự kiện chuột */
+}
+
+.position-relative:hover .overlay {
+  opacity: 1; /* Hiển thị rõ ràng khi di chuột qua */
+}
+
+.overlay .text-center {
+  z-index: 2; /* Đảm bảo nội dung của overlay hiện rõ */
+}
+
