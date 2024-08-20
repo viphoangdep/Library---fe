@@ -1,0 +1,19 @@
+[
+    {
+      "username": "admin_user1",
+      "password": "adminPass123",
+      "name": "Admin One",
+      "phone": "+19876543210",
+      "email": "admin.one@example.com",
+      "address": "123 Admin St, New York, NY, 10001, USA"
+    },
+    {
+      "username": "admin_user2",
+      "password": "secureAdmin456",
+      "name": "Admin Two",
+      "phone": "+10987654321",
+      "email": "admin.two@example.com",
+      "address": "456 Admin Ave, Los Angeles, CA, 90001, USA"
+    }
+  ]
+  

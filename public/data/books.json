@@ -1,0 +1,64 @@
+[
+  {
+    "id": 1,
+    "title": "Sách A",
+    "author": "Tác Giả A",
+    "category": "Fiction",
+    "pageSize": 300,
+    "releasedDate": "2022-01-15",
+    "src": "https://vietart.co/blog/wp-content/uploads/2014/01/9_thiet_ke_bia_sach_dep_20.jpg",
+    "description": "A thrilling fictional tale that takes you on an unforgettable journey through an imaginary world, where every turn of the page reveals new surprises, deep characters, and a storyline that is both compelling and thought-provoking. This novel explores the complexities of human emotions, the conflicts between duty and desire, and the ultimate quest for truth and justice in a world that is both familiar and fantastical. With rich, evocative language and masterful storytelling, 'Sách A' is a book that will stay with you long after you've turned the last page.",
+    "quantity": 10
+  },
+  {
+    "id": 2,
+    "title": "Sách B",
+    "author": "Tác Giả B",
+    "category": "Non-Fiction",
+    "pageSize": 250,
+    "releasedDate": "2021-06-23",
+    "src": "https://dulichkhanhson.vn/uploads/news/2017_07/tv1.jpg",
+    "description": "An insightful non-fiction book offering practical knowledge and real-world examples, 'Sách B' dives deep into the complexities of modern life, offering readers a comprehensive guide to navigating the challenges of today's fast-paced world. From personal development to professional growth, this book covers a wide range of topics, providing actionable advice and strategies that are backed by extensive research and case studies. Whether you're looking to improve your skills, expand your knowledge, or simply gain a better understanding of the world around you, 'Sách B' is an invaluable resource that will inspire and empower you.",
+    "quantity": 15
+  },
+  {
+    "id": 3,
+    "title": "The Romantic Silence",
+    "author": "Nguyen Van A",
+    "releasedDate": "2022-03-15",
+    "category": "Romance",
+    "src": "https://intamphuc.vn/wp-content/uploads/2023/06/mau-bia-sach-dep-2.jpg",
+    "description": "A heartwarming romance novel that explores the depth of love and emotions in a captivating story, 'The Romantic Silence' takes readers on an emotional journey through the highs and lows of a passionate relationship. The characters are richly drawn and relatable, and their experiences of love, loss, and redemption resonate deeply with readers. With lyrical prose and a plot that unfolds with grace and sensitivity, this novel is a celebration of love in all its forms, and a poignant reminder of the power of connection and the enduring strength of the human heart.",
+    "quantity": 8
+  },
+  {
+    "id": 4,
+    "title": "Lonely Nights",
+    "author": "Tác Giả B",
+    "releasedDate": "2021-11-22",
+    "category": "Thriller",
+    "src": "https://marketplace.canva.com/EAD46HNrYBs/1/0/1003w/canva-an-%E1%BB%A7i-l%C3%A3ng-m%E1%BA%A1n-s%C3%A1ch-b%C3%ACa-naZIEWMJArU.jpg",
+    "description": "A gripping thriller that will keep you on the edge of your seat with unexpected twists and suspense, 'Lonely Nights' is a masterclass in psychological tension. As the story unfolds, the lines between reality and illusion blur, leaving readers questioning everything they thought they knew. The protagonist's journey is one of survival and self-discovery, as they navigate a world filled with danger, deception, and moral ambiguity. With its dark atmosphere, complex characters, and relentless pacing, 'Lonely Nights' is a thriller that will haunt your thoughts long after you've finished reading.",
+    "quantity": 12
+  },
+  {
+    "id": 5,
+    "title": "The Dark Tale",
+    "author": "Le Van C",
+    "releasedDate": "2020-06-10",
+    "category": "Horror",
+    "src": "https://marketplace.canva.com/EAD4741RYvA/1/0/1003w/canva-t%E1%BB%91i-%E1%BA%A3nh-b%C3%ACa-s%C3%A1ch-t%E1%BB%B1-truy%E1%BB%87n-7RowszlcylI.jpg",
+    "description": "A chilling horror story that delves into the darkest corners of the human psyche, 'The Dark Tale' is a terrifying exploration of fear, guilt, and the supernatural. The narrative weaves together haunting imagery and psychological depth, creating a sense of dread that intensifies with each chapter. The characters are haunted by their pasts, their secrets, and the malevolent forces that seem to be closing in on them. With its gothic atmosphere, intricate plot, and unsettling themes, 'The Dark Tale' is a horror novel that will leave readers with a lingering sense of unease and a newfound appreciation for the power of storytelling.",
+    "quantity": 5
+  },
+  {
+    "id": 6,
+    "title": "Modern Architecture",
+    "author": "Pham Thi D",
+    "releasedDate": "2019-08-30",
+    "category": "Architecture",
+    "src": "https://marketplace.canva.com/EAD5HLS8iEQ/1/0/1003w/canva-cam-v%C3%A0-t%C3%ADm-%C4%91%E1%BA%ADm-h%C3%ACnh-tam-gi%C3%A1c-hi%E1%BB%87n-%C4%91%E1%BA%A1i-b%C3%ACa-s%C3%A1ch-ki%E1%BA%BFn-tr%C3%BAc-qLDZsmeCL7w.jpg",
+    "description": "An insightful book on modern architecture, featuring stunning designs and revolutionary concepts, 'Modern Architecture' offers a comprehensive overview of the architectural trends and innovations that are shaping the built environment of the 21st century. The book explores the relationship between form and function, the integration of sustainable practices, and the ways in which technology is transforming the field. With detailed case studies, expert commentary, and a wealth of visual material, 'Modern Architecture' is an essential resource for architects, designers, and anyone with an interest in the future of architecture.",
+    "quantity": 7
+  }
+]

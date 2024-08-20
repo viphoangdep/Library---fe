@@ -1,0 +1,27 @@
+[
+    {
+      "username": "john_doe",
+      "password": "password123",
+      "name": "John Doe",
+      "phone": "+1234567890",
+      "email": "john.doe@example.com",
+      "address": "123 Main St, New York, NY, 10001, USA"
+    },
+    {
+      "username": "jane_smith",
+      "password": "securePass456",
+      "name": "Jane Smith",
+      "phone": "+9876543210",
+      "email": "jane.smith@example.com",
+      "address": "456 Maple Ave, Los Angeles, CA, 90001, USA"
+    },
+    {
+      "username": "alice_wonder",
+      "password": "aliceWonder789",
+      "name": "Alice Wonderland",
+      "phone": "+1122334455",
+      "email": "alice.wonder@example.com",
+      "address": "789 Oak St, Chicago, IL, 60601, USA"
+    }
+  ]
+  

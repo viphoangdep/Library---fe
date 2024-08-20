@@ -1,0 +1,47 @@
+[
+  {
+    "id": 1,
+    "username": "john123",
+    "password": "pass123",
+    "name": "John Doe",
+    "phone": "1234567890",
+    "email": "john@example.com",
+    "address": "123 Elm Street"
+  },
+  {
+    "id": 2,
+    "username": "jane456",
+    "password": "mypassword",
+    "name": "Jane Smith",
+    "phone": "0987654321",
+    "email": "jane@example.com",
+    "address": "456 Oak Avenue"
+  },
+  {
+    "id": 3,
+    "username": "mike789",
+    "password": "mike789",
+    "name": "Mike Johnson",
+    "phone": "1122334455",
+    "email": "mike@example.com",
+    "address": "789 Pine Road"
+  },
+  {
+    "id": 4,
+    "username": "emily000",
+    "password": "emily000",
+    "name": "Emily Davis",
+    "phone": "6677889900",
+    "email": "emily@example.com",
+    "address": "321 Birch Lane"
+  },
+  {
+    "id": 5,
+    "username": "alex456",
+    "password": "alex456",
+    "name": "Alex Brown",
+    "phone": "3344556677",
+    "email": "alex@example.com",
+    "address": "654 Cedar Boulevard"
+  }
+]
