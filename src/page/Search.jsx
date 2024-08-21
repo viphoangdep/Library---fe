@@ -22,7 +22,7 @@ function Borrow() {
   const [selectedCategory, setSelectedCategory] = useState('');
   const [selectedDescription, setSelectedDescription] = useState('');
   const [selectedBookImage, setSelectedBookImage] = useState('');
-  const [isSearched, setIsSearched] = useState(false); // New state for search trigger
+  const [isSearched, setIsSearched] = useState(false); // State for search trigger
 
   useEffect(() => {
     fetch('../data/books.json')
@@ -91,6 +91,10 @@ function Borrow() {
     }
   };
 
+  const handleTitleInputChange = (event, newInputValue) => {
+    setSelectedTitle(newInputValue); // Update input value
+  };
+
   const handleAuthorChange = (event, newValue) => {
     setSelectedAuthor(newValue);
 
@@ -101,6 +105,10 @@ function Borrow() {
     } else {
       updateFilters(books);
     }
+  };
+
+  const handleAuthorInputChange = (event, newInputValue) => {
+    setSelectedAuthor(newInputValue); // Update input value
   };
 
   const handleDateChange = (date) => {
@@ -117,6 +125,10 @@ function Borrow() {
     } else {
       updateFilters(books);
     }
+  };
+
+  const handleCategoryInputChange = (event, newInputValue) => {
+    setSelectedCategory(newInputValue); // Update input value
   };
 
   return (
@@ -149,6 +161,7 @@ function Borrow() {
             placeholder={'Type to search and select a title'}
             width="350px"
             onChange={handleTitleChange}
+            onInputChange={handleTitleInputChange} // Handle text input change
             value={selectedTitle}
           />
           <Box
@@ -165,6 +178,7 @@ function Borrow() {
               placeholder={'Type to search and select an author'}
               width="350px"
               onChange={handleAuthorChange}
+              onInputChange={handleAuthorInputChange} // Handle text input change
               value={selectedAuthor}
             />
             <BasicDatePicker
@@ -189,6 +203,7 @@ function Borrow() {
               placeholder={'Type to search and select a category'}
               width="350px"
               onChange={handleCategoryChange}
+              onInputChange={handleCategoryInputChange} // Handle text input change
               value={selectedCategory}
             />
           </Box>
