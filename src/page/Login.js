@@ -22,7 +22,7 @@ function Login() {
     }
 
     try {
-      // Make a POST request to the login API endpoint
+      // Gửi yêu cầu POST đến API đăng nhập
       const response = await fetch('https://localhost:7222/api/account/login', {
         method: 'POST',
         headers: {
@@ -33,38 +33,38 @@ function Login() {
           password: password,
         }),
       });
+    
+      console.log('Response:', response);
 
+      // Kiểm tra nếu phản hồi không thành công
       if (!response.ok) {
-        const errorData = await response.json();
-      
-        if (errorData.errors) {
-          const errorMessages = Object.values(errorData.errors)
-            .flat() // Flatten in case there are multiple errors for a field
-            .join("\n"); // Join the error messages into a single string
-      
-          alert(`Failed to login:\n${errorMessages}`);
-        } else {
-          alert('Failed to login: Unknown error');
-        }
-      
-        console.error('Failed to login:', errorData);
+        // Nếu có lỗi, đọc thông báo lỗi từ phản hồi
+        const errorMessage = await response.text(); // Sử dụng text() thay vì json()
+        alert(`Error: ${errorMessage}`);
+        console.error('Error:', errorMessage);
         return;
       }
-
+    
+      // Xử lý phản hồi thành công
       const data = await response.json();
-
-      // Handle successful login
       console.log('Login successful:', data);
-
-      // Store the token in localStorage
-      localStorage.setItem('authToken', data.token); // Adjust the key and value as needed
-
-      // Redirect to home or another page on success
-      navigate('/');  
+      localStorage.setItem('authToken', data.token); // Lưu token
+    
+    
+      // Xử lý đăng nhập thành công
+      console.log('Login successful:', data);
+    
+      // Lưu token vào localStorage
+      localStorage.setItem('authToken', data.token); // Điều chỉnh khóa và giá trị nếu cần
+    
+      // Điều hướng người dùng đến trang khác sau khi đăng nhập thành công
+      navigate('/');
     } catch (error) {
-      // Handle errors (e.g., show an error message)
+      // Xử lý các lỗi khác (ví dụ như lỗi kết nối)
       console.error('Login error:', error.message);
+      alert(`Login error: ${error.message}`);
     }
+    
   };
 
   return (
@@ -122,14 +122,11 @@ function Login() {
               >
                 Login
               </button>
-              <a className="text-muted d-block text-end" href="/">
-                Forgot password?
-              </a>
             </div>
 
             <div className="d-flex flex-row align-items-center justify-content-center pb-4 mb-4">
               <p className="mb-0">Don't have an account?</p>
-              <button type="button" className="btn btn-outline-danger mx-2">
+              <button type="button" className="btn btn-outline-danger mx-2" onClick={() => navigate("/signup")}>
                 Sign Up
               </button>
             </div>

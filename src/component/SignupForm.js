@@ -1,6 +1,7 @@
 import React, { useState } from "react";
-
+import { useNavigate } from 'react-router-dom';
 const SignupForm = () => {
+  const navigate = useNavigate();  // Hook for navigation
   const [formData, setFormData] = useState({
     userName: "",
     password: "",
@@ -58,6 +59,7 @@ const SignupForm = () => {
         localStorage.setItem("authToken", result.token);
         alert("Signed up successfully!");
       }
+      navigate('/');  
     } catch (error) {
       console.error("Error:", error);
     }
