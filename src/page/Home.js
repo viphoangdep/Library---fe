@@ -4,6 +4,7 @@ import Hero from "../component/Hero";
 import MiniContent from "../component/MiniContent";
 import Footer from "../component/Footer";
 import BookDialog from "../component/BookDialog";
+import BookSearch from "../component/BookSearch";
 
 function Home() {
   const [books, setBooks] = useState([]); // Store fetched books data, initialized as an empty array
@@ -13,15 +14,22 @@ function Home() {
   const [selectedBook, setSelectedBook] = useState(null); // Book selected for dialog
   const [currentPage, setCurrentPage] = useState(1); // Current page number
   const [totalPages, setTotalPages] = useState(1); // Total number of pages
+  const [searchParams, setSearchParams] = useState({}); // Search parameters state
 
   const pageSize = 6; // Number of books per page
 
-  // Fetch books data from API with pagination
+  // Fetch books data from API with pagination and search parameters
   useEffect(() => {
     setLoading(true);
-    fetch(
-      `https://localhost:7222/api/book?PageNumber=${currentPage}&PageSize=${pageSize}`
-    )
+    
+    // Build the query string from search parameters
+    const query = new URLSearchParams({
+      PageNumber: currentPage,
+      PageSize: pageSize,
+      ...Object.fromEntries(Object.entries(searchParams).filter(([_, v]) => v != null && v !== '')) // Remove empty values
+    }).toString();
+
+    fetch(`https://localhost:7222/api/book?${query}`)
       .then((response) => {
         if (!response.ok) {
           throw new Error("Network response was not ok");
@@ -29,10 +37,8 @@ function Home() {
         return response.json();
       })
       .then((data) => {
-        setBooks(data.books || []); // Safely set books, defaulting to an empty array if data.items is undefined
-        setTotalPages(data.total || 1); // Ensure totalPages has a fallback value
-        console.log("Books:", books); // Log the updated books array
-        console.log("Total pages:", data.total); // Log the updated total pages
+        setBooks(data.books || []); // Safely set books, defaulting to an empty array if data.books is undefined
+        setTotalPages(data.count || 1); // Ensure totalPages has a fallback value
         setLoading(false);
       })
       .catch((error) => {
@@ -40,7 +46,7 @@ function Home() {
         setError(error);
         setLoading(false);
       });
-  }, [currentPage]);
+  }, [currentPage, searchParams]); // Include searchParams as a dependency
 
   const handleClickOpen = (book) => {
     setSelectedBook(book);
@@ -56,6 +62,11 @@ function Home() {
     if (newPage > 0 && newPage <= totalPages) {
       setCurrentPage(newPage);
     }
+  };
+
+  const handleSearch = (filter) => {
+    setSearchParams(filter); // Update search parameters
+    setCurrentPage(1); // Reset to first page when search parameters change
   };
 
   // Conditional rendering for loading and error
@@ -76,19 +87,22 @@ function Home() {
       />
 
       {/* Hero Component */}
-      <Hero />
+      {/* <Hero /> */}
 
       {/* MiniContent Component */}
-      <MiniContent />
+      {/* <MiniContent /> */}
+
+      {/* BookSearch Component */}
+      <BookSearch onSearch={handleSearch} />
 
       {/* Book Section */}
       <div className="container d-flex flex-wrap justify-content-center p-3">
         {/* Add a check to ensure books is defined before calling map */}
-        {books ? (
+        {books.length > 0 ? (
           books.map((book) => (
             <div key={book.id} className="position-relative m-5">
               <img
-                src={book.imageURL|| "default-image-url"} // Replace "default-image-url" with a placeholder or default image URL
+                src={book.imageURL || "https://via.placeholder.com/150"} // Placeholder URL
                 alt={book.title}
                 style={{ width: "18rem", height: "30rem", objectFit: "cover" }}
                 onClick={() => handleClickOpen(book)} // Open dialog with book details
@@ -155,11 +169,11 @@ function Home() {
         </nav>
       </div>
 
-      {/* Footer Component */}
-      <Footer />
-
       {/* Book Dialog */}
       <BookDialog open={openDialog} onClose={handleClose} book={selectedBook} />
+
+      {/* Footer Component */}
+      <Footer />
     </div>
   );
 }

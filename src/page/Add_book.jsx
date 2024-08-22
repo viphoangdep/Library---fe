@@ -1,13 +1,11 @@
 import React, { useState } from 'react';
-import NavBar from '../component/NavBar';
-import BigContent from '../component/BigContent';
 import Container from '@mui/material/Container';
 import Box from '@mui/material/Box';
-import TextField from '@mui/material/TextField'; // Import TextField
+import TextField from '@mui/material/TextField';
+import Button from '@mui/material/Button'; // Import Button
 import BasicDatePicker from '../component/DatePicker';
-import FloatingActionButton from '../component/FloatingActionButtons';
 import Product from '../component/Product';
-import Category from '../component/Category';
+import BigContent from '../component/BigContent';
 
 function Add() {
   const [selectedTitle, setSelectedTitle] = useState('');
@@ -15,84 +13,60 @@ function Add() {
   const [selectedDate, setSelectedDate] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('');
   const [quantity, setQuantity] = useState('');
-  const [imageUrl, setImageUrl] = useState(''); // State for image URL
-  const [description, setDescription] = useState(''); // State for description
+  const [imageUrl, setImageUrl] = useState('');
+  const [description, setDescription] = useState('');
+  const [pages, setPages] = useState('');
+  const [isbn, setIsbn] = useState('');
+  const [publisher, setPublisher] = useState('');
+  const defaultImageUrl = 'https://bizweb.dktcdn.net/100/449/104/products/phukien-3-thumb.jpg?v=1680697314390/150';
 
-  const defaultImageUrl = 'https://bizweb.dktcdn.net/100/449/104/products/phukien-3-thumb.jpg?v=1680697314390/150'; // URL for default image
-
-  const handleSave = () => {
+  const handleSave = async() => {
     // Create a new book object
     const newBook = {
       title: selectedTitle || null,
       author: selectedAuthor || null,
-      releasedDate: selectedDate || null,
+      publishedDate: selectedDate || null,
       category: selectedCategory || null,
-      src: imageUrl || null,
-      description: description || null, // Include description
       quantity: quantity || null,
-      imageUrl: imageUrl || null,
+      imageURL: imageUrl || null,
+      description: description || null,
+      pages: parseInt(pages) || null,
+      isbn: isbn || null,
     };
 
-    // Save the new book to books.json (replace this with actual API call or file write logic)
-    fetch('../data/books.json', {
+    // Save the new book to the API endpoint
+    const response = await fetch('https://localhost:7222/api/book', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify(newBook),
-    })
-    .then(response => response.json())
-    .then(data => {
-      console.log('Book saved:', data);
-      alert('Add successfully'); // Show success alert
-    })
-    .catch(error => {
-      console.error('Error saving the book:', error);
-      alert('Failed to add book'); // Show failure alert
     });
-  };
-
-  const handleTitleChange = (event) => {
-    setSelectedTitle(event.target.value);
-  };
-
-  const handleAuthorChange = (event) => {
-    setSelectedAuthor(event.target.value);
-  };
-
-  const handleDateChange = (date) => {
-    setSelectedDate(date ? date.format('YYYY-MM-DD') : '');
-  };
-
-  const handleCategoryChange = (event) => {
-    setSelectedCategory(event.target.value);
-  };
-
-  const handleQuantityChange = (event) => {
-    setQuantity(event.target.value);
-  };
-
-  const handleImageUrlChange = (event) => {
-    setImageUrl(event.target.value);
-  };
-
-  const handleDescriptionChange = (event) => {
-    setDescription(event.target.value); // Update description state
+    
+    if (!response.ok) {
+      const errorData = await response.json();
+    
+      if (errorData.errors) {
+        const errorMessages = Object.values(errorData.errors)
+          .flat() // Flatten in case there are multiple errors for a field
+          .join("\n"); // Join the error messages into a single string
+    
+        alert(`Failed to add the book:\n${errorMessages}`);
+      } else {
+        alert('Failed to add the book: Unknown error');
+      }
+    
+      console.error('Failed to add the book:', errorData);
+      return;
+    }
   };
 
   return (
     <div className="Borrow">
-      {/* <NavBar />
-      <BigContent bigcontent="Fahasa - Camp of the soul" position="text-center" /> */}
-      <div className="container my-4">
-        <Category sx={{ justifyContent: 'center' }} />
-      </div>
-
       <BigContent bigcontent="Add a new book" position="text-center" />
 
       <div className="container my-5 d-flex">
         <Container>
-          {/* Show default image if imageUrl is empty */}
           <Product src={imageUrl.trim() !== '' ? imageUrl : defaultImageUrl} />
         </Container>
 
@@ -100,76 +74,111 @@ function Add() {
           sx={{
             width: '740px',
             backgroundColor: '#f0f0f0',
-            padding: '16px',
+            padding: '24px',
             borderRadius: '8px',
             height: 'fit-content',
           }}
         >
-          <TextField
-            label="Book Title"
-            placeholder="Enter book title"
-            fullWidth
-            margin="normal"
-            value={selectedTitle}
-            onChange={handleTitleChange}
-          />
-          <TextField
-            label="Author"
-            placeholder="Enter author name"
-            fullWidth
-            margin="normal"
-            value={selectedAuthor}
-            onChange={handleAuthorChange}
-          />
-          <BasicDatePicker
-            label={'Released Date'}
-            placeholder={'Select release date'}
-            width="300px"
-            onChange={handleDateChange}
-            value={selectedDate}
-          />
-          <TextField
-            label="Category"
-            placeholder="Enter category"
-            fullWidth
-            margin="normal"
-            value={selectedCategory}
-            onChange={handleCategoryChange}
-          />
-          <TextField
-            label="Quantity"
-            placeholder="Enter quantity"
-            fullWidth
-            margin="normal"
-            value={quantity}
-            onChange={handleQuantityChange}
-          />
-          <TextField
-            label="Image URL"
-            placeholder="Enter image URL"
-            fullWidth
-            margin="normal"
-            value={imageUrl}
-            onChange={handleImageUrlChange}
-          />
-          <TextField
-            label="Description"
-            placeholder="Enter book description"
-            fullWidth
-            margin="normal"
-            multiline
-            rows={4} // Adjust number of rows as needed
-            value={description}
-            onChange={handleDescriptionChange}
-          />
           <Box
             sx={{
               display: 'flex',
-              justifyContent: 'center',
-              marginTop: '16px',
+              flexDirection: 'column',
+              gap: '16px', // Adjust gap as needed
             }}
           >
-            <FloatingActionButton onClick={handleSave} />
+            <TextField
+              label="Book Title"
+              placeholder="Enter book title"
+              fullWidth
+              value={selectedTitle}
+              onChange={(event) => setSelectedTitle(event.target.value)}
+            />
+            <TextField
+              label="Author"
+              placeholder="Enter author name"
+              fullWidth
+              value={selectedAuthor}
+              onChange={(event) => setSelectedAuthor(event.target.value)}
+            />
+            <TextField
+              label="Publisher"
+              placeholder="Enter publisher name"
+              fullWidth
+              value={publisher}
+              onChange={(event) => setPublisher(event.target.value)}
+            />
+            <LocalizationProvider dateAdapter={AdapterDayjs}>
+              <DatePicker
+                label="Published Date"
+                value={selectedDate}
+                onChange={(newValue) => setSelectedDate(newValue)}
+                renderInput={(params) => <TextField {...params} fullWidth />}
+              />
+            </LocalizationProvider>
+            <TextField
+              label="Category"
+              placeholder="Enter category"
+              fullWidth
+              value={selectedCategory}
+              onChange={(event) => setSelectedCategory(event.target.value)}
+            />
+            <TextField
+              label="Quantity"
+              placeholder="Enter quantity"
+              fullWidth
+              value={quantity}
+              onChange={(event) => setQuantity(event.target.value)}
+            />
+            <TextField
+              label="Pages"
+              placeholder="Enter number of pages"
+              fullWidth
+              type="number"
+              value={pages}
+              onChange={(event) => setPages(event.target.value)}
+            />
+            <TextField
+              label="ISBN"
+              placeholder="Enter ISBN"
+              fullWidth
+              value={isbn}
+              onChange={(event) => setIsbn(event.target.value)}
+            />
+            <TextField
+              label="Image URL"
+              placeholder="Enter image URL"
+              fullWidth
+              value={imageUrl}
+              onChange={(event) => setImageUrl(event.target.value)}
+            />
+            <TextField
+              label="Description"
+              placeholder="Enter book description"
+              fullWidth
+              multiline
+              rows={3}
+              value={description}
+              onChange={(event) => setDescription(event.target.value)}
+            />
+            <Box
+              sx={{
+                display: 'flex',
+                justifyContent: 'center',
+                marginTop: '16px',
+              }}
+            >
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={handleSave}
+                sx={{
+                  padding: '10px 20px', // Adjust padding as needed
+                  fontSize: '16px', // Adjust font size if needed
+                }}
+              >
+                Save
+              </Button>
+            </Box>
           </Box>
         </Container>
       </div>

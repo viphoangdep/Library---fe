@@ -4,77 +4,66 @@ import { IconButton, InputAdornment, TextField } from '@mui/material';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import { useNavigate } from 'react-router-dom';
-import { useUser } from '../context/UserContext';
 
 function Login() {
   const [password, setPassword] = useState('');
   const [username, setUserName] = useState('');
   const [showPassword, setShowPassword] = useState(false);
-  const navigate = useNavigate();
-  const { setUserRole } = useUser(); // Access setUserRole function from context
+  const navigate = useNavigate();  // Hook for navigation
 
   const handleClickShowPassword = () => setShowPassword(!showPassword);
   const handleMouseDownPassword = (event) => event.preventDefault();
 
-  const fetchData = async (url) => {
-    try {
-      const response = await fetch(url);
-      if (!response.ok) throw new Error(`Failed to fetch data from ${url}`);
-  
-      const text = await response.text();
-      if (!text) throw new Error(`Empty response from ${url}`);
-  
-      const data = JSON.parse(text);
-      if (!data || data.length === 0) throw new Error(`No data found in ${url}`);
-  
-      return data;
-    } catch (error) {
-      console.error(`Error fetching or parsing data from ${url}:`, error);
-      throw error;
-    }
-  };
-
   const handleLogin = async () => {
+    // Simple validation checks
+    if (!username.trim() || !password.trim()) {
+      alert('Please enter both username and password.');
+      return;
+    }
+
     try {
-      // Fetch data from JSON files
-      const customers = await fetchData('/data/customer.json');
-      const librarians = await fetchData('/data/librarian.json');
-      const admins = await fetchData('/data/admin.json');
+      // Make a POST request to the login API endpoint
+      const response = await fetch('https://localhost:7222/api/account/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          userName: username,
+          password: password,
+        }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
       
-      // Authenticate user
-      const customer = customers.find(
-        (user) => user.username === username && user.password === password
-      );
-  
-      if (customer) {
-        setUserRole('customer'); // Set role for customer
-        navigate('/home');
+        if (errorData.errors) {
+          const errorMessages = Object.values(errorData.errors)
+            .flat() // Flatten in case there are multiple errors for a field
+            .join("\n"); // Join the error messages into a single string
+      
+          alert(`Failed to login:\n${errorMessages}`);
+        } else {
+          alert('Failed to login: Unknown error');
+        }
+      
+        console.error('Failed to login:', errorData);
         return;
       }
-  
-      const librarian = librarians.find(
-        (user) => user.username === username && user.password === password
-      );
-  
-      if (librarian) {
-        setUserRole('librarian'); // Set role for librarian
-        navigate('/home');
-        return;
-      }
-  
-      const admin = admins.find(
-        (user) => user.username === username && user.password === password
-      );
-  
-      if (admin) {
-        setUserRole('admin'); // Set role for admin
-        navigate('/home');
-        return;
-      }
-  
-      alert('Invalid username or password');
+
+      const data = await response.json();
+
+      // Handle successful login
+      console.log('Login successful:', data);
+
+      // Store the token in localStorage
+      localStorage.setItem('authToken', data.token); // Adjust the key and value as needed
+
+      // Redirect to home or another page on success
+      navigate('/');  
     } catch (error) {
-      console.error(error);
+      // Handle errors (e.g., show an error message)
+      console.error('Login error:', error.message);
     }
   };
 
@@ -129,7 +118,7 @@ function Login() {
               <button
                 type="button"
                 className="btn btn-outline-primary w-100"
-                onClick={handleLogin}
+                onClick={handleLogin}  // Attach handleLogin to the button
               >
                 Login
               </button>

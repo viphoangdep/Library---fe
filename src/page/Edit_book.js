@@ -1,323 +1,241 @@
 import React, { useState, useEffect } from 'react';
-import NavBar from '../component/NavBar';
-import BigContent from '../component/BigContent';
+import { useParams, useNavigate } from 'react-router-dom';
 import Container from '@mui/material/Container';
 import Box from '@mui/material/Box';
-import SingleSelect from '../component/SingleSelect';
-import BasicDatePicker from '../component/DatePicker';
-import FloatingActionButton from '../component/FloatingActionButtons';
-import Product from '../component/Product';
-import Category from '../component/Category';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
-import EditIcon from '@mui/icons-material/Edit'; // Add your Edit Icon
-import IconButton from '@mui/material/IconButton';
+import Product from '../component/Product';
+import BigContent from '../component/BigContent';
+import { DatePicker } from "@mui/x-date-pickers";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { LocalizationProvider } from "@mui/x-date-pickers";
+import dayjs from 'dayjs'; // Import dayjs
 
 function Edit_book() {
-  const [books, setBooks] = useState([]);
-  const [bookTitles, setBookTitles] = useState([]);
-  const [authors, setAuthors] = useState([]);
-  const [releasedDates, setReleasedDates] = useState([]);
-  const [categories, setCategories] = useState([]);
-
+  const { id } = useParams(); // Get book ID from URL
+  const navigate = useNavigate();
+  const [book, setBook] = useState(null);
   const [selectedTitle, setSelectedTitle] = useState('');
   const [selectedAuthor, setSelectedAuthor] = useState('');
-  const [selectedDate, setSelectedDate] = useState('');
+  const [selectedDate, setSelectedDate] = useState(null); // Initialize as null
   const [selectedCategory, setSelectedCategory] = useState('');
-  const [selectedDescription, setSelectedDescription] = useState('');
-  const [selectedBookImage, setSelectedBookImage] = useState('');
-  const [editTitle, setEditTitle] = useState('');
-  const [editAuthor, setEditAuthor] = useState('');
-  const [editDate, setEditDate] = useState('');
-  const [editCategory, setEditCategory] = useState('');
-  const [editDescription, setEditDescription] = useState('');
-  const [editImage, setEditImage] = useState('');
-  const [isSearched, setIsSearched] = useState(false); // New state for search trigger
-  const [isEditing, setIsEditing] = useState(false); // New state for edit mode
+  const [quantity, setQuantity] = useState('');
+  const [imageUrl, setImageUrl] = useState('');
+  const [description, setDescription] = useState('');
+  const [pages, setPages] = useState('');
+  const [isbn, setIsbn] = useState('');
+  const [publisher, setPublisher] = useState('');
+
+  const defaultImageUrl = 'https://bizweb.dktcdn.net/100/449/104/products/phukien-3-thumb.jpg?v=1680697314390/150';
 
   useEffect(() => {
-    fetch('../data/books.json')
-      .then(response => {
-        if (!response.ok) {
-          throw new Error('Network response was not ok');
-        }
-        return response.json();
+    const token = localStorage.getItem('authToken');
+    if (!token) {
+      navigate('/login');
+      return;
+    }
+
+    // Fetch the existing book details
+    fetch(`https://localhost:7222/api/book/${id}`, {
+      headers: {
+        'Authorization': `Bearer ${token}`,
+      },
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        setBook(data);
+        setSelectedTitle(data.title);
+        setSelectedAuthor(data.author);
+        setPublisher(data.publisher);
+        setSelectedDate(dayjs(data.publishedDate)); // Use dayjs for date handling
+        setSelectedCategory(data.category);
+        setQuantity(data.quantity);
+        setImageUrl(data.imageURL);
+        setDescription(data.description);
+        setPages(data.pages);
+        setIsbn(data.isbn);
       })
-      .then(data => {
-        setBooks(data);
-        updateFilters(data);
-      })
-      .catch(error => {
-        console.error('Error fetching the books:', error);
+      .catch((error) => {
+        console.error('Failed to fetch book details:', error);
+        alert('Failed to load book details.');
       });
-  }, []);
+  }, [id, navigate]);
 
-  const updateFilters = (booksData) => {
-    setBookTitles([...new Set(booksData.map(book => book.title))]);
-    setAuthors([...new Set(booksData.map(book => book.author))]);
-    setReleasedDates([...new Set(booksData.map(book => book.releasedDate))]);
-    setCategories([...new Set(booksData.map(book => book.category))]);
-  };
-
-  const handleSearch = () => {
-    let filteredBooks = books;
-
-    if (selectedTitle) {
-      filteredBooks = filteredBooks.filter(book => book.title === selectedTitle);
+  const handleSave = async () => {
+    const token = localStorage.getItem('authToken');
+    if (!token) {
+      navigate('/login');
+      return;
     }
 
-    if (selectedAuthor) {
-      filteredBooks = filteredBooks.filter(book => book.author === selectedAuthor);
-    }
+    // Create an updated book object
+    const updatedBook = {
+      title: selectedTitle,
+      author: selectedAuthor,
+      publisher: publisher,
+      publishedDate: selectedDate ? selectedDate.format('YYYY-MM-DD') : null, // Format date
+      category: selectedCategory,
+      quantity: quantity,
+      imageURL: imageUrl,
+      description: description,
+      pages: parseInt(pages),
+      isbn: isbn,
+    };
 
-    if (selectedDate) {
-      filteredBooks = filteredBooks.filter(book => book.releasedDate === selectedDate);
-    }
-
-    if (selectedCategory) {
-      filteredBooks = filteredBooks.filter(book => book.category === selectedCategory);
-    }
-
-    if (filteredBooks.length > 0) {
-      const book = filteredBooks[0];
-      setSelectedBookImage(book.src);
-      setSelectedDescription(book.description);
-      setEditTitle(book.title);
-      setEditAuthor(book.author);
-      setEditDate(book.releasedDate);
-      setEditCategory(book.category);
-      setEditDescription(book.description);
-      setEditImage(book.src);
-      setIsEditing(false); // Reset edit mode on search
-    } else {
-      setSelectedBookImage('');
-      setSelectedDescription('');
-      setEditTitle('');
-      setEditAuthor('');
-      setEditDate('');
-      setEditCategory('');
-      setEditDescription('');
-      setEditImage('');
-    }
-
-    setIsSearched(true); // Update search trigger state
-  };
-
-  const handleUpdate = () => {
-    const updatedBooks = books.map(book => {
-      if (book.title === selectedTitle) {
-        return {
-          ...book,
-          title: editTitle,
-          author: editAuthor,
-          releasedDate: editDate,
-          category: editCategory,
-          description: editDescription,
-          src: editImage
-        };
-      }
-      return book;
+    // Save the updated book to the API endpoint
+    const response = await fetch(`https://localhost:7222/api/book/${id}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
+      },
+      body: JSON.stringify(updatedBook),
     });
 
-    fetch('../data/books.json', {
-      method: 'PUT', // Assuming you have a backend to handle PUT requests
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(updatedBooks)
-    })
-      .then(response => response.json())
-      .then(data => {
-        console.log('Books updated successfully:', data);
-        setBooks(updatedBooks);
-        setIsEditing(false); // Exit edit mode after saving
-      })
-      .catch(error => {
-        console.error('Error updating the books:', error);
-      });
-  };
-
-  const handleTitleChange = (event, newValue) => {
-    setSelectedTitle(newValue);
-
-    if (newValue) {
-      const filteredBooks = books.filter(book => book.title === newValue);
-      setAuthors([...new Set(filteredBooks.map(book => book.author))]);
-      setCategories([...new Set(filteredBooks.map(book => book.category))]);
+    if (!response.ok) {
+      const errorData = await response.json();
+    
+      if (errorData.errors) {
+        const errorMessages = Object.values(errorData.errors)
+          .flat() // Flatten in case there are multiple errors for a field
+          .join("\n"); // Join the error messages into a single string
+    
+        alert(`Failed to update the book:\n${errorMessages}`);
+      } else {
+        alert('Failed to update the book: Unknown error');
+      }
+    
+      console.error('Failed to update the book:', errorData);
+      return;
     } else {
-      updateFilters(books);
+      alert('The book has been successfully updated!');
+      navigate('/'); // Navigate back to book list
     }
   };
 
-  const handleAuthorChange = (event, newValue) => {
-    setSelectedAuthor(newValue);
-
-    if (newValue) {
-      const filteredBooks = books.filter(book => book.author === newValue);
-      setBookTitles([...new Set(filteredBooks.map(book => book.title))]);
-      setCategories([...new Set(filteredBooks.map(book => book.category))]);
-    } else {
-      updateFilters(books);
-    }
-  };
-
-  const handleDateChange = (date) => {
-    setSelectedDate(date ? date.format('YYYY-MM-DD') : '');
-  };
-
-  const handleCategoryChange = (event, newValue) => {
-    setSelectedCategory(newValue);
-
-    if (newValue) {
-      const filteredBooks = books.filter(book => book.category === newValue);
-      setBookTitles([...new Set(filteredBooks.map(book => book.title))]);
-      setAuthors([...new Set(filteredBooks.map(book => book.author))]);
-    } else {
-      updateFilters(books);
-    }
-  };
+  if (!book) {
+    return <div>Loading book details...</div>;
+  }
 
   return (
-    <div className="Edit">
-      {/* <NavBar>  </NavBar>
-      <BigContent bigcontent="Edit Book Details" position="text-center" /> */}
-      <div className="container my-4">
-        <Category sx={{ justifyContent: 'center' }} />
-      </div>
-      
+    <div className="Borrow">
       <BigContent bigcontent="Edit Book Details" position="text-center" />
-      
+
       <div className="container my-5 d-flex">
         <Container>
-          {selectedBookImage && <Product src={selectedBookImage} />}
+          <Product src={imageUrl.trim() !== '' ? imageUrl : defaultImageUrl} />
         </Container>
-        
+
         <Container
           sx={{
             width: '740px',
             backgroundColor: '#f0f0f0',
-            padding: '16px',
+            padding: '24px',
             borderRadius: '8px',
             height: 'fit-content',
           }}
         >
-          <SingleSelect
-            names={bookTitles}
-            label={'Book Title'}
-            placeholder={'Type to search and select a title'}
-            width="350px"
-            onChange={handleTitleChange}
-            value={selectedTitle}
-          />
-          <Box
-            sx={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              gap: '16px',
-              marginTop: '16px',
-            }}
-          >
-            <SingleSelect
-              names={authors}
-              label={'Author'}
-              placeholder={'Type to search and select an author'}
-              width="350px"
-              onChange={handleAuthorChange}
-              value={selectedAuthor}
-            />
-            <BasicDatePicker
-              label={'Released Date'}
-              placeholder={'Select release date'}
-              width="300px"
-              onChange={handleDateChange}
-              value={selectedDate}
-            />
-          </Box>
-          <Box
-            sx={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              gap: '16px',
-              marginTop: '8px',
-            }}
-          >
-            <SingleSelect
-              names={categories}
-              label={'Category'}
-              placeholder={'Type to search and select a category'}
-              width="350px"
-              onChange={handleCategoryChange}
-              value={selectedCategory}
-            />
-          </Box>
           <Box
             sx={{
               display: 'flex',
               flexDirection: 'column',
               gap: '16px',
-              marginTop: '16px',
             }}
           >
-            {isEditing && (
-              <>
-                <TextField
-                  label="Description"
-                  value={editDescription}
-                  onChange={(e) => setEditDescription(e.target.value)}
-                  fullWidth
-                  multiline
-                  rows={4}
-                />
-                <TextField
-                  label="Book Image URL"
-                  value={editImage}
-                  onChange={(e) => setEditImage(e.target.value)}
-                  fullWidth
-                />
-                <Box
-                  sx={{
-                    display: 'flex',
-                    justifyContent: 'center',
-                    marginTop: '16px',
-                  }}
-                >
-                  <Button 
-                    variant="contained" 
-                    color="primary" 
-                    onClick={handleUpdate}
-                  >
-                    Save Changes
-                  </Button>
-                </Box>
-              </>
-            )}
-            {!isEditing && (
-              <Box
+            <TextField
+              label="Book Title"
+              placeholder="Enter book title"
+              fullWidth
+              value={selectedTitle}
+              onChange={(event) => setSelectedTitle(event.target.value)}
+            />
+            <TextField
+              label="Author"
+              placeholder="Enter author name"
+              fullWidth
+              value={selectedAuthor}
+              onChange={(event) => setSelectedAuthor(event.target.value)}
+            />
+            <TextField
+              label="Publisher"
+              placeholder="Enter publisher name"
+              fullWidth
+              value={publisher}
+              onChange={(event) => setPublisher(event.target.value)}
+            />
+            <LocalizationProvider dateAdapter={AdapterDayjs}>
+              <DatePicker
+                label="Published Date"
+                value={selectedDate}
+                onChange={(newValue) => setSelectedDate(newValue)}
+                renderInput={(params) => <TextField {...params} fullWidth />}
+              />
+            </LocalizationProvider>
+            <TextField
+              label="Category"
+              placeholder="Enter category"
+              fullWidth
+              value={selectedCategory}
+              onChange={(event) => setSelectedCategory(event.target.value)}
+            />
+            <TextField
+              label="Quantity"
+              placeholder="Enter quantity"
+              fullWidth
+              value={quantity}
+              onChange={(event) => setQuantity(event.target.value)}
+            />
+            <TextField
+              label="Pages"
+              placeholder="Enter number of pages"
+              fullWidth
+              type="number"
+              value={pages}
+              onChange={(event) => setPages(event.target.value)}
+            />
+            <TextField
+              label="ISBN"
+              placeholder="Enter ISBN"
+              fullWidth
+              value={isbn}
+              onChange={(event) => setIsbn(event.target.value)}
+            />
+            <TextField
+              label="Image URL"
+              placeholder="Enter image URL"
+              fullWidth
+              value={imageUrl}
+              onChange={(event) => setImageUrl(event.target.value)}
+            />
+            <TextField
+              label="Description"
+              placeholder="Enter book description"
+              fullWidth
+              multiline
+              rows={3}
+              value={description}
+              onChange={(event) => setDescription(event.target.value)}
+            />
+            <Box
+              sx={{
+                display: 'flex',
+                justifyContent: 'center',
+                marginTop: '16px',
+              }}
+            >
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={handleSave}
                 sx={{
-                  display: 'flex',
-                  justifyContent: 'center',
-                  marginTop: '16px',
+                  padding: '10px 20px',
+                  fontSize: '16px',
                 }}
               >
-                <IconButton
-                  onClick={() => setIsEditing(true)}
-                  color="primary"
-                >
-                  <EditIcon />
-                </IconButton>
-                <FloatingActionButton onClick={handleSearch} />
-              </Box>
-            )}
+                Save Changes
+              </Button>
+            </Box>
           </Box>
-        
-          {/* Render BigContent only after search is performed */}
-          {isSearched && selectedDescription && (
-            <BigContent 
-              bigcontent={selectedTitle} 
-              smallcontent={selectedDescription} 
-              position="text-start" 
-            />
-          )}
         </Container>
       </div>
     </div>
