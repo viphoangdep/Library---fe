@@ -5,10 +5,10 @@ import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button"; // Import Button
 import Product from "../component/Product";
 import BigContent from "../component/BigContent";
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import dayjs from 'dayjs';
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import dayjs from "dayjs";
 
 function Add() {
   const [selectedTitle, setSelectedTitle] = useState("");
@@ -24,6 +24,11 @@ function Add() {
   const defaultImageUrl =
     "https://bizweb.dktcdn.net/100/449/104/products/phukien-3-thumb.jpg?v=1680697314390/150";
 
+  const handleDateChange = (newValue) => {
+    const dateOnly = dayjs(newValue).format("YYYY-MM-DD"); // Format as YYYY-MM-DD
+    setSelectedDate(dateOnly); // Store the formatted date
+  };
+
   const handleSave = async () => {
     // Create a new book object
     const newBook = {
@@ -36,6 +41,7 @@ function Add() {
       description: description || null,
       pages: parseInt(pages) || null,
       isbn: isbn || null,
+      publisher: publisher || null,
     };
 
     // Save the new book to the API endpoint
@@ -61,7 +67,8 @@ function Add() {
       }
 
       console.error("Failed to add the book:", errorData);
-      return;
+    } else {
+      alert("Book added successfully!");
     }
   };
 
@@ -114,13 +121,11 @@ function Add() {
             <LocalizationProvider dateAdapter={AdapterDayjs}>
               <DatePicker
                 label="Published Date"
-                value={selectedDate}
-                onChange={(newValue) => setSelectedDate(newValue)}
+                value={selectedDate ? dayjs(selectedDate) : null}
+                onChange={handleDateChange}
                 renderInput={(params) => <TextField {...params} fullWidth />}
-                inputFormat="DD/MM/YYYY" // Định dạng ngày
-                minDate={dayjs()} // Ngày nhỏ nhất là ngày hiện tại
-                disablePast // Không cho phép chọn ngày trong quá khứ
-                clearable // Có nút xóa giá trị
+                inputFormat="YYYY-MM-DD" // Display format
+                clearable // Button to clear the value
               />
             </LocalizationProvider>
             <TextField

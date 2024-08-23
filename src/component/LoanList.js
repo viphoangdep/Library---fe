@@ -313,7 +313,6 @@ const LoanList = () => {
         <DialogContent>
           <TextField
             margin="dense"
-            label="Loan Date"
             type="date"
             fullWidth
             value={loanDate}

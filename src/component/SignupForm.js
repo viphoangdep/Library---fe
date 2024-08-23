@@ -36,21 +36,12 @@ const SignupForm = () => {
       );
 
       if (!response.ok) {
-        const errorData = await response.json();
-      
-        if (errorData.errors) {
-          const errorMessages = Object.values(errorData.errors)
-            .flat() // Flatten in case there are multiple errors for a field
-            .join("\n"); // Join the error messages into a single string
-      
-          alert(`Failed to update the book:\n${errorMessages}`);
-        } else {
-          alert('Failed to update the book: Unknown error');
-        }
-      
-        console.error('Failed to update the book:', errorData);
+        // Nếu có lỗi, đọc thông báo lỗi từ phản hồi
+        const errorMessage = await response.text(); // Sử dụng text() thay vì json()
+        alert(`Error: ${errorMessage}`);
+        console.log('Error:', errorMessage);
         return;
-      }
+      } 
 
       const result = await response.json();
       console.log("Success:", result);
